@@ -14,7 +14,22 @@ Diffuse objects
 - [ ] HDRIs
 - [ ] Bloom
 - [ ] Multithreaded rendering
-- [ ] Keyframing / Animations (?) 
+- [ ] Keyframing / Animations (?)
+
+## Compilation
+To compile this project CMake, SDL2 and GLM must be installed. It is assumed that a Linux environment is being used. Support for Windows may be implemented in the future
+- [Install CMake](https://cmake.org/download/)
+- [Install SDL2](https://wiki.libsdl.org/SDL2/Installation)
+- [Build & Install GLM](https://github.com/g-truc/glm/tree/master?tab=readme-ov-file#build-and-install)
+
+To compile the project the following commands should be executed:
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+After compiling an executable named `Raytracer` should have been generated in the `build/` directory.
 
 ## Acknowledgments
 - Raytracing In A Weekend series: https://raytracing.github.io/ (Outlines what a proper raytracer outght to have)
