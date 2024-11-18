@@ -61,3 +61,14 @@ void Screen::fromArray(std::vector<glm::vec3>& pixels) {
     SDL_UnlockTexture(m_drawTexture);
     SDL_RenderCopy(m_renderer, m_drawTexture, NULL, NULL);
 }
+
+void Screen::waitForKeypress() {
+    bool interrupted = false;
+    while (!interrupted) {
+        SDL_Event ev;
+        while (SDL_PollEvent(&ev)) {
+            if (ev.type == SDL_KEYDOWN)
+                interrupted = true;
+        }
+    }
+}

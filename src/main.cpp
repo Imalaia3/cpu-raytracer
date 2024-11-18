@@ -28,6 +28,6 @@ int main(int argc, char const *argv[]) {
     scr.fromArray(result);
     scr.updateDisplay();
     
-    SDL_Delay(2500);
+    scr.waitForKeypress();
     return 0;
 }

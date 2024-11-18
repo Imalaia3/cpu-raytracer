@@ -1,5 +1,6 @@
 #include "camera.h"
 #include <iostream>
+#include "object/sphere.h"
 
 Camera::Camera(glm::vec3 position, float focalLength, float viewWidth, float viewHeight, uint32_t imgWidth, uint32_t imgHeight) :
     m_position(position), m_focalLength(focalLength), m_width(viewWidth), m_height(viewHeight), m_imageWidth(imgWidth), m_imageHeight(imgHeight) {
@@ -17,6 +18,8 @@ std::vector<glm::vec3> Camera::render() {
 
     std::vector<glm::vec3> outputData(m_imageWidth*m_imageHeight, glm::vec3(0.0f));
 
+    Sphere aSphere(glm::vec3(0.0f, 0.0f, 3.0f), 0.5f, "Bob", glm::vec3(1.0f));
+
 
     // all rays should go through the center of each pixel and not the top left
     glm::vec3 drawOrigin = m_topLeft + (glm::vec3(m_pixelDx, m_pixelDy, 0.0f) * 0.5f);
@@ -27,7 +30,15 @@ std::vector<glm::vec3> Camera::render() {
             // left = -x, right = +x, up = -y down = +y
             // fixme: maybe it's better if +y to be up
             glm::vec3 direction = (drawOrigin + glm::vec3(x*m_pixelDx, y*m_pixelDy, 0.0f)) - m_position;
-            outputData[y*m_imageWidth+x] = glm::vec3(glm::abs(direction.y/m_height), glm::abs(direction.x/m_width), 0.0f);
+            Ray ray(m_position, direction);
+
+            auto col = aSphere.collides(ray);
+            if (col.has_value()) {
+                // https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.3/manual/writing-shaders-urp-unlit-normals.html
+                outputData[y*m_imageWidth+x] = col.value().normal * 0.5f + 0.5f;
+            } else {
+                outputData[y*m_imageWidth+x] = glm::vec3(0.0f,0.0f,1.0f);
+            }
         }
     }
 
