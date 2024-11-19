@@ -10,5 +10,5 @@ void Renderer::setCameraSettings(CameraSettings settings) {
 }
 
 std::vector<glm::vec3> Renderer::render() {
-    return m_camera.render(); // todo: implement worlds
+    return m_camera.render(m_world);
 }

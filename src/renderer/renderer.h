@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "camera.h"
+#include "world.h"
 
 class Renderer {
 public:
@@ -22,7 +23,9 @@ public:
     std::vector<glm::vec3> render();
     
     void setCameraSettings(CameraSettings settings);
+    World& getWorld() { return m_world; }
 private:
     uint32_t m_displayWidth, m_displayHeight;
     Camera m_camera;
+    World m_world;
 };

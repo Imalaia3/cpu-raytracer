@@ -22,7 +22,7 @@ public:
 
     glm::vec3 getPosition() const { return m_position; }
     void setPosition(glm::vec3 position) { m_position = position; }
-    std::string getObjectName() const { return m_name; }
+    const std::string& getObjectName() const { return m_name; }
 protected:
     std::string m_name;
     glm::vec3 m_position;
