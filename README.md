@@ -34,3 +34,5 @@ After compiling an executable named `Raytracer` should have been generated in th
 ## Acknowledgments
 - Raytracing In A Weekend series: https://raytracing.github.io/ (Outlines what a proper raytracer outght to have)
 - Blender Cycles Renderer Source Code: https://github.com/blender/cycles (Optimization techniques)
+- Computer Graphics From Scratch: https://gabrielgambetta.com/computer-graphics-from-scratch/
+- Physically Based Rendering: From Theory To Implementation: https://pbr-book.org/4ed/contents
