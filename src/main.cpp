@@ -11,21 +11,23 @@ int main(int argc, char const *argv[]) {
     std::cout << "SDL2 Version: " << (uint32_t)ver.major << "." << (uint32_t)ver.minor << "\n";
     std::cout << "GLM Version: " << GLM_VERSION << "\n";
 
-    // Standard 480p 16:9 resolution
-    const uint32_t WIDTH = 854;
-    const uint32_t HEIGHT = 480;
+    // 16:9 resolution
+    const uint32_t WIDTH = 960;
+    const uint32_t HEIGHT = 540;
 
 
     Screen scr(WIDTH, HEIGHT, "Raytracer");
     Renderer renderer(WIDTH, HEIGHT);
     renderer.setCameraSettings(Renderer::CameraSettings{
         .position = glm::vec3(0.0f),
-        .focalLength = 1.f, // Around 50 deg ?
-        .viewWidth = 2.0f * (16.0f/9.0f),
-        .viewHeight = 2.0f, // 2 is an arbitrary value
+        .focalLength = 1.f,
+        .viewWidth = 1.6f,
+        .viewHeight = 0.9f,
     });
 
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(0.0f, 0.0f, 1.0f), 0.4f, "Ball", glm::vec3(1.0f)));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 8.0f), 0.5f, "Bob0", glm::vec3(1.0f)));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, 0.0f, 8.0f), 0.5f, "Bob1", glm::vec3(1.0f)));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, 0.0f, 8.0f), 0.5f, "Bob2", glm::vec3(1.0f)));
 
     auto result = renderer.render();
     scr.fromArray(result);

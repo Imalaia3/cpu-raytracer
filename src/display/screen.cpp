@@ -67,7 +67,7 @@ void Screen::waitForKeypress() {
     while (!interrupted) {
         SDL_Event ev;
         while (SDL_PollEvent(&ev)) {
-            if (ev.type == SDL_KEYDOWN)
+            if (ev.type == SDL_KEYDOWN || ev.type == SDL_QUIT)
                 interrupted = true;
         }
     }
