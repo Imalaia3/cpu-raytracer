@@ -25,9 +25,7 @@ int main(int argc, char const *argv[]) {
         .viewHeight = 2.0f, // 2 is an arbitrary value
     });
 
-    // Used RT in one weekend object positions, so it's obvious when something is really wrong
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(0.0f, 0.0f, 1.0f), 0.4f, "Ball", glm::vec3(1.0f)));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(0.0f, -100.5f, 0.0f), 100.f, "Floor", glm::vec3(1.0f)));
 
     auto result = renderer.render();
     scr.fromArray(result);
