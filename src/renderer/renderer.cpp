@@ -7,6 +7,7 @@ void Renderer::setCameraSettings(CameraSettings settings) {
         settings.viewWidth, settings.viewHeight,
         m_displayWidth, m_displayHeight
     );
+    m_camera.setCameraBounceLimit(settings.maxBounces);
 }
 
 std::vector<glm::vec3> Renderer::render() {

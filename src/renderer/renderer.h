@@ -17,6 +17,7 @@ public:
         float focalLength;
         float viewWidth;
         float viewHeight;
+        uint32_t maxBounces;
     };
 
     Renderer(uint32_t width, uint32_t height);

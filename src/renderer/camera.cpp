@@ -22,6 +22,7 @@ std::vector<glm::vec3> Camera::render(World& world) {
     // all rays should go through the center of each pixel and not the top left
     glm::vec3 drawOrigin = m_topLeft + (glm::vec3(m_pixelDx, m_pixelDy, 0.0f) * 0.5f);
     std::cout << "Camera: Screen Pixel Origin (XYZ): " << drawOrigin.x << " " << drawOrigin.y << " " << drawOrigin.z << "\n";
+    std::cout << "Camera: Maximum Bounces Per Pixel: " << m_maxBounces << "\n";
     for (uint32_t y = 0; y < m_imageHeight; y++) {
         for (uint32_t x = 0; x < m_imageWidth; x++) {
             // pixel position - camera center, resulting in a coordinate system where:
@@ -30,16 +31,7 @@ std::vector<glm::vec3> Camera::render(World& world) {
             glm::vec3 direction = (drawOrigin + glm::vec3(x*m_pixelDx, y*m_pixelDy, 0.0f)) - m_position;
             Ray ray(m_position, glm::normalize(direction));
 
-            // std::cout << "Direction at: "  << x << " " << y;
-            // std::cout << " : "  <<  glm::normalize(direction).x << " " << glm::normalize(direction).y << glm::normalize(direction).z << "\n";
-
-            auto col = getClosestObjectInWorld(ray, world);
-            if (col.has_value()) {
-                // https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@8.3/manual/writing-shaders-urp-unlit-normals.html
-                outputData[y*m_imageWidth+x] = col.value().normal * 0.5f + 0.5f;
-            } else {
-                outputData[y*m_imageWidth+x] = glm::vec3(0.529f,0.807f,0.921f);
-            }
+            outputData[y*m_imageWidth+x] = getPixelValue(world, ray, m_maxBounces);
         }
     }
 
@@ -62,4 +54,13 @@ std::optional<Object::CollisionData> Camera::getClosestObjectInWorld(Ray& ray, W
     if (closestValue == std::numeric_limits<float>::max())
         return {};
     return closestCollision;
+}
+
+glm::vec3 Camera::getPixelValue(World& world, Ray initialRay, uint32_t bouncesLeft) {
+    if (bouncesLeft == 0)
+        return glm::vec3(0.0f);
+    auto collision = getClosestObjectInWorld(initialRay, world);
+    if (!collision.has_value()) // Sky color
+        return glm::vec3(0.529f,0.807f,0.921f);
+    return collision.value().color;
 }
