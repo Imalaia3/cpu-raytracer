@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
     });
 
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 3.0f), 0.5f, "Bob0", glm::vec3(1.0f)));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, 0.0f, 3.0f), 0.5f, "Bob1", glm::vec3(1.0f)));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, -.5f, 3.0f), 0.5f, "Bob1", glm::vec3(1.0f)));
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, 0.0f, 3.0f), 0.5f, "Bob2", glm::vec3(1.0f)));
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, -100.0f, 15.0f), 99.5f, "Floor", glm::vec3(1.0f, 1.0f, 0.0f)));
 

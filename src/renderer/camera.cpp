@@ -33,6 +33,9 @@ std::vector<glm::vec3> Camera::render(World& world) {
 
             outputData[y*m_imageWidth+x] = getPixelValue(world, ray, m_maxBounces);
         }
+        // don't print on every line
+        if (y % 20 == 0)
+            std::cout << "Line " << y + 1 << " done (" << m_imageHeight - y - 1 << " lines left).\n";
     }
 
     return outputData;
@@ -62,5 +65,6 @@ glm::vec3 Camera::getPixelValue(World& world, Ray initialRay, uint32_t bouncesLe
     auto collision = getClosestObjectInWorld(initialRay, world);
     if (!collision.has_value()) // Sky color
         return glm::vec3(0.529f,0.807f,0.921f);
-    return collision.value().color;
+    auto newRay = mat.reflect(collision.value(), initialRay);
+    return mat.color(collision.value(), newRay, getPixelValue(world, newRay, bouncesLeft-1));
 }

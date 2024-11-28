@@ -4,6 +4,7 @@
 #include <optional>
 #include "ray.h"
 #include "world.h"
+#include "material/generic.h"
 
 class Camera {
 public:
@@ -14,7 +15,7 @@ public:
 private:
     std::optional<Object::CollisionData> getClosestObjectInWorld(Ray& ray, World& world);
     glm::vec3 getPixelValue(World& world, Ray initialRay, uint32_t bouncesLeft);
-
+    GenericDiffuse mat;
     glm::vec3 m_position; // camera center
     float m_focalLength;
     float m_width, m_height; // only correlates with the aspect ratio of the display
