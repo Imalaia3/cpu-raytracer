@@ -1,6 +1,6 @@
 #pragma once
-#include "../object/object.h"
 #include "../ray.h"
+#include "../object/object.h"
 #include <glm/glm.hpp>
 
 class Material {

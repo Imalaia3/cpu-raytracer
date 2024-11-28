@@ -65,6 +65,7 @@ glm::vec3 Camera::getPixelValue(World& world, Ray initialRay, uint32_t bouncesLe
     auto collision = getClosestObjectInWorld(initialRay, world);
     if (!collision.has_value()) // Sky color
         return glm::vec3(0.529f,0.807f,0.921f);
-    auto newRay = mat.reflect(collision.value(), initialRay);
-    return mat.color(collision.value(), newRay, getPixelValue(world, newRay, bouncesLeft-1));
+    auto mat = collision.value().material;
+    auto newRay = mat->reflect(collision.value(), initialRay);
+    return mat->color(collision.value(), newRay, getPixelValue(world, newRay, bouncesLeft-1));
 }
