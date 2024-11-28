@@ -3,7 +3,7 @@ A simple CPU based raytracer (or a path tracer) that aims to be feature rich and
 
 ## Planned Features
 
-Diffuse objects
+- [ ] Diffuse objects
 - [ ] Reflective/Metallic objects
 - [ ] Emissive objects
 - [ ] Normal maps / Roughness maps / Color (albedo) maps
