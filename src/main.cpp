@@ -28,17 +28,21 @@ int main(int argc, char const *argv[]) {
         .samplesPerPixel = 4
     });
 
-    auto diffuse = std::make_shared<GenericDiffuse>();
+    auto whiteDiffuse = std::make_shared<GenericDiffuse>();
+    auto cyanDiffuse = std::make_shared<GenericDiffuse>();
+    cyanDiffuse->updateSettings(Utils::colorFromHex(0xf79900)*4.0f, Utils::colorFromHex(0xf79900), 0.5f);
 
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 3.0f), 0.5f, "Bob0", diffuse));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, -.5f, 3.0f), 0.5f, "Bob1", diffuse));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, 0.0f, 3.0f), 0.5f, "Bob2", diffuse));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, -100.0f, 15.0f), 99.5f, "Floor", diffuse));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 3.0f), 0.5f, "Bob0", whiteDiffuse));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, -.5f, 3.0f), 0.5f, "Bob1", cyanDiffuse));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, 0.0f, 3.0f), 0.5f, "Bob2", whiteDiffuse));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, -100.0f, 15.0f), 99.5f, "Floor", whiteDiffuse));
 
     auto result = renderer.render();
     scr.fromArray(result);
     scr.updateDisplay();
     
     scr.waitForKeypress();
+    SDL_Delay(300);
+    scr.waitForKeypress(); // Make sure the user meant close the render.
     return 0;
 }
