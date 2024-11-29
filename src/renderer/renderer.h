@@ -18,6 +18,7 @@ public:
         float viewWidth;
         float viewHeight;
         uint32_t maxBounces;
+        uint32_t samplesPerPixel;
     };
 
     Renderer(uint32_t width, uint32_t height);

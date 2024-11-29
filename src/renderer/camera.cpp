@@ -3,8 +3,8 @@
 #include <limits>
 #include "object/sphere.h"
 
-Camera::Camera(glm::vec3 position, float focalLength, float viewWidth, float viewHeight, uint32_t imgWidth, uint32_t imgHeight) :
-    m_position(position), m_focalLength(focalLength), m_width(viewWidth), m_height(viewHeight), m_imageWidth(imgWidth), m_imageHeight(imgHeight) {
+Camera::Camera(glm::vec3 position, float focalLength, float viewWidth, float viewHeight, uint32_t imgWidth, uint32_t imgHeight, uint32_t samplesPerPixel) :
+    m_position(position), m_focalLength(focalLength), m_width(viewWidth), m_height(viewHeight), m_imageWidth(imgWidth), m_imageHeight(imgHeight), m_samplesPerPixel(samplesPerPixel) {
     
     m_pixelDx = viewWidth / (float)imgWidth;
     m_pixelDy = -(viewHeight / (float)imgHeight);
@@ -31,7 +31,11 @@ std::vector<glm::vec3> Camera::render(World& world) {
             glm::vec3 direction = (drawOrigin + glm::vec3(x*m_pixelDx, y*m_pixelDy, 0.0f)) - m_position;
             Ray ray(m_position, glm::normalize(direction));
 
-            outputData[y*m_imageWidth+x] = getPixelValue(world, ray, m_maxBounces);
+            glm::vec3 samplesSum = glm::vec3(0.0f);
+            for (size_t i = 0; i < m_samplesPerPixel; i++) {
+                samplesSum += getPixelValue(world, ray, m_maxBounces);
+            }
+            outputData[y*m_imageWidth+x] = samplesSum / static_cast<float>(m_samplesPerPixel); // average of all pixels
         }
         // don't print on every line
         if (y % 20 == 0)

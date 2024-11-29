@@ -24,7 +24,8 @@ int main(int argc, char const *argv[]) {
         .focalLength = 1.f,
         .viewWidth = 1.6f,
         .viewHeight = 0.9f,
-        .maxBounces = 16
+        .maxBounces = 16,
+        .samplesPerPixel = 4
     });
 
     auto diffuse = std::make_shared<GenericDiffuse>();

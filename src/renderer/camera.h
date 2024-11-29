@@ -9,7 +9,7 @@
 class Camera {
 public:
     Camera() {}
-    Camera(glm::vec3 position, float focalLength, float viewWidth, float viewHeight, uint32_t imgWidth, uint32_t imgHeight);
+    Camera(glm::vec3 position, float focalLength, float viewWidth, float viewHeight, uint32_t imgWidth, uint32_t imgHeight, uint32_t samplesPerPixel);
     std::vector<glm::vec3> render(World& world);
     void setCameraBounceLimit(uint32_t bounces) { m_maxBounces = bounces; }
 private:
@@ -23,4 +23,5 @@ private:
     uint32_t m_imageWidth, m_imageHeight;
     bool m_initialized = false; // False when default constructor used, must be true to render.
     uint32_t m_maxBounces = 1;
+    uint32_t m_samplesPerPixel = 1;
 };
