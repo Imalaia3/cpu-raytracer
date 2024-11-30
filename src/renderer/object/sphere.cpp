@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-std::optional<Sphere::CollisionData> Sphere::collides(Ray& ray) const {
+std::optional<Sphere::CollisionData> Sphere::collides(Ray& ray, float threshold) const {
     glm::vec3 oMinusC = ray.origin - m_position;
     float a = glm::dot(ray.direction, ray.direction);
     float b = 2.0f*glm::dot(ray.direction, oMinusC);
@@ -9,8 +9,13 @@ std::optional<Sphere::CollisionData> Sphere::collides(Ray& ray) const {
     if (discriminant < 0)
         return {};
     
-    // if discriminant > 0 get closest result
+    // if discriminant > 0 get closest result that is above the threshold
     float d = (-b - glm::sqrt(discriminant)) / 2*a;
+    if (d < threshold) {
+        d = (-b + glm::sqrt(discriminant)) / 2*a;
+        if (d < threshold)
+            return {};
+    }
     return CollisionData {
         .objectName = m_name,
         .t = d,

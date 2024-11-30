@@ -2,13 +2,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/random.hpp>
 #include <iostream>
+#include <random>
 
 namespace Utils {
     inline glm::vec3 pointInHemisphere(const glm::vec3& normal) {
         glm::vec3 point = glm::sphericalRand(1.0f);
-        if (glm::dot(normal, point) < 0.0f)
-            return -point;
-        return point;
+        return (glm::dot(normal, point) < 0.0f) ? -point : point;
     }
 
     inline glm::vec3 colorFromNormal(const glm::vec3 normal) {
@@ -23,4 +22,9 @@ namespace Utils {
         uint8_t r = (hexColor & 0xFF0000) >> 16;
         return colorFromRGB(r, g, b);
     }
+    // generate a random float between lower and upper (inclusive).
+    inline float randFloat(float lower, float upper) {
+        return lower+(upper-lower)*(std::rand()/(float)RAND_MAX);
+    }
+
 } // namespace Utils

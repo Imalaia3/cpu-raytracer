@@ -50,9 +50,9 @@ std::optional<Object::CollisionData> Camera::getClosestObjectInWorld(Ray& ray, W
     Object::CollisionData closestCollision{};
 
     for (auto &&object : world.getObjects()) {
-        auto c = object.get()->collides(ray);
+        auto c = object.get()->collides(ray, 0.0f);
         if (c.has_value()) {
-            if (c.value().t < closestValue && c.value().t >= 0.0f) {
+            if (c.value().t < closestValue && c.value().t > 0.0001f) {
                 closestValue = c.value().t;
                 closestCollision = c.value();
             }

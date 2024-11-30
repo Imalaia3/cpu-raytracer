@@ -5,7 +5,10 @@
 #include "display/screen.h"
 #include "renderer/renderer.h"
 #include "renderer/object/sphere.h"
+#include "renderer/object/volumetric.h"
 #include "renderer/material/generic.h"
+#include "renderer/material/constant.h"
+#include "renderer/utils/timer.h"
 
 int main(int argc, char const *argv[]) {   
     SDL_version ver; SDL_VERSION(&ver);
@@ -24,25 +27,35 @@ int main(int argc, char const *argv[]) {
         .focalLength = 1.f,
         .viewWidth = 1.6f,
         .viewHeight = 0.9f,
-        .maxBounces = 16,
-        .samplesPerPixel = 4
+        .maxBounces = 24,
+        .samplesPerPixel = 100
     });
 
     auto whiteDiffuse = std::make_shared<GenericDiffuse>();
-    auto cyanDiffuse = std::make_shared<GenericDiffuse>();
-    cyanDiffuse->updateSettings(Utils::colorFromHex(0xf79900)*4.0f, Utils::colorFromHex(0xf79900), 0.5f);
+    auto yellowDiffuse = std::make_shared<GenericDiffuse>();
+    yellowDiffuse->updateSettings(Utils::colorFromHex(0xf79900)*4.0f, Utils::colorFromHex(0xf79900), 0.5f);
+    auto smokeMaterial = std::make_shared<ConstantMaterial>();
+    smokeMaterial->updateSettings(glm::vec3(0.2f));
 
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 3.0f), 0.5f, "Bob0", whiteDiffuse));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, -.5f, 3.0f), 0.5f, "Bob1", cyanDiffuse));
+
+    renderer.getWorld().addObject(std::make_unique<VolumeObject>("", std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 3.0f), 0.5f, "Bob0", whiteDiffuse), 0.1f, smokeMaterial));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, -.5f, 3.0f), 0.5f, "Bob1", yellowDiffuse));
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, 0.0f, 3.0f), 0.5f, "Bob2", whiteDiffuse));
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, -100.0f, 15.0f), 99.5f, "Floor", whiteDiffuse));
 
+    Utils::Timer perfTimer;
+    perfTimer.start();
     auto result = renderer.render();
     scr.fromArray(result);
     scr.updateDisplay();
-    
+    perfTimer.stop();
+    auto deltaTime = perfTimer.getDelta();
+    std::cout << "Image complete!\n";
+    std::cout << "Rendering & Presenting took " << std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count() << "ms.\n";
+    std::cout << "Press any key twice to exit\n";
+
     scr.waitForKeypress();
-    SDL_Delay(300);
-    scr.waitForKeypress(); // Make sure the user meant close the render.
+    SDL_Delay(500);
+    scr.waitForKeypress();
     return 0;
 }

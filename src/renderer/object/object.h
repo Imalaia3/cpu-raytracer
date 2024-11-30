@@ -4,6 +4,7 @@
 #include <optional>
 #include <memory>
 #include <string>
+#include <limits>
 #include "../ray.h"
 
 class Material; // #include <../material/material.h>
@@ -20,7 +21,8 @@ public:
 
     Object(glm::vec3 position, std::string objectName, std::shared_ptr<Material> material) : m_position(position), m_name(objectName), m_material(material) {};
     virtual ~Object() = default;
-    virtual std::optional<CollisionData> collides(Ray& ray) const = 0;
+    // if distance is less than threshold collides() will return no value
+    virtual std::optional<CollisionData> collides(Ray& ray, float threshold = 0.0f) const = 0;
 
     glm::vec3 getPosition() const { return m_position; }
     void setPosition(glm::vec3 position) { m_position = position; }
