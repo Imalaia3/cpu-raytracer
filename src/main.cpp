@@ -5,6 +5,7 @@
 #include "display/screen.h"
 #include "renderer/renderer.h"
 #include "renderer/object/sphere.h"
+#include "renderer/object/plane.h"
 #include "renderer/object/volumetric.h"
 #include "renderer/material/generic.h"
 #include "renderer/material/constant.h"
@@ -27,8 +28,8 @@ int main(int argc, char const *argv[]) {
         .focalLength = 1.f,
         .viewWidth = 1.6f,
         .viewHeight = 0.9f,
-        .maxBounces = 24,
-        .samplesPerPixel = 100
+        .maxBounces = 16,
+        .samplesPerPixel = 4
     });
 
     auto whiteDiffuse = std::make_shared<GenericDiffuse>();
@@ -41,7 +42,8 @@ int main(int argc, char const *argv[]) {
     renderer.getWorld().addObject(std::make_unique<VolumeObject>("", std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 3.0f), 0.5f, "Bob0", whiteDiffuse), 0.1f, smokeMaterial));
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.0f, -.5f, 3.0f), 0.5f, "Bob1", yellowDiffuse));
     renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, 0.0f, 3.0f), 0.5f, "Bob2", whiteDiffuse));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, -100.0f, 15.0f), 99.5f, "Floor", whiteDiffuse));
+    renderer.getWorld().addObject(std::make_unique<Plane>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), "Floor", whiteDiffuse));
+    // renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, -100.0f, 15.0f), 99.5f, "Floor", whiteDiffuse));
 
     Utils::Timer perfTimer;
     perfTimer.start();
@@ -51,7 +53,10 @@ int main(int argc, char const *argv[]) {
     perfTimer.stop();
     auto deltaTime = perfTimer.getDelta();
     std::cout << "Image complete!\n";
-    std::cout << "Rendering & Presenting took " << std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count() << "ms.\n";
+    std::cout << "Render Info:\n";
+    std::cout << "\tImage size: " << WIDTH << "x" << HEIGHT << " pixels\n";
+    std::cout << "\tObjects in world: " << renderer.getWorld().objectCount() << "\n";
+    std::cout << "\tRendering & Presenting took " << std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count() << "ms.\n";
     std::cout << "Press any key twice to exit\n";
 
     scr.waitForKeypress();
