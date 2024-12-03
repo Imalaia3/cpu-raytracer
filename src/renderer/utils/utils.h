@@ -27,4 +27,16 @@ namespace Utils {
         return lower+(upper-lower)*(std::rand()/(float)RAND_MAX);
     }
 
+    // eta = η
+    // https://registry.khronos.org/OpenGL-Refpages/gl4/html/refract.xhtml
+    // Return a refraction vector using Snell's Law
+    inline glm::vec3 refract(glm::vec3 incident, glm::vec3 normal, float eta) {
+        float cosTheta = glm::dot(incident, normal);
+        float k = 1.0f - eta*eta * (1.0f - cosTheta*cosTheta);
+        // If k < 0.0f then total internal reflection has occurred (eg light reflecting from water when looking up at the sea)
+        if (k < 0.0f)
+            return glm::vec3(0.0f);
+        return eta * incident - (eta * cosTheta + glm::sqrt(k)) * normal;
+    }
+
 } // namespace Utils
