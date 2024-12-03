@@ -32,11 +32,13 @@ std::optional<VolumeObject::CollisionData> VolumeObject::collides(Ray& ray, floa
         return {};
     
     float t = lowerBound.value().t + maxDistanceBeforeHit / length;
-    return CollisionData {
+    CollisionData data = CollisionData {
         .objectName = m_name,
         .t = t,
         .position = ray.point(t),
         .normal = glm::vec3(),
         .material = m_material
     };
+    setFaceType(data, ray.direction);
+    return data;
 }

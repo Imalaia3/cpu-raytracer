@@ -12,11 +12,13 @@ std::optional<Object::CollisionData> Plane::collides(Ray& ray, float threshold) 
     if (t < threshold) 
         return {};
 
-    return CollisionData {
+    CollisionData data = CollisionData {
         .objectName = m_name,
         .t = t,
         .position = ray.point(t),
         .normal = m_normal, // FIXME: plane normal may be bigger than a unit vector
         .material = m_material
     };
+    setFaceType(data, ray.direction);
+    return data;
 }

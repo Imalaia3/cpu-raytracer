@@ -16,11 +16,15 @@ std::optional<Sphere::CollisionData> Sphere::collides(Ray& ray, float threshold)
         if (d < threshold)
             return {};
     }
-    return CollisionData {
+
+    CollisionData data =  CollisionData {
         .objectName = m_name,
         .t = d,
         .position = ray.point(d),
         .normal = glm::normalize(ray.point(d) - m_position), // Point - Center
         .material = m_material
     };
+    setFaceType(data, ray.direction);
+
+    return data;
 }

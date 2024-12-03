@@ -13,6 +13,7 @@ public:
 
     Ray reflect(Object::CollisionData& collision, Ray& incomingRay) override {
         // Not Implemented
+        // TODO: Implement a front face - back face system
         std::cout << "Glass::reflect has not been implemented!\n";
         return Ray(collision.position, incomingRay.direction);
     }
