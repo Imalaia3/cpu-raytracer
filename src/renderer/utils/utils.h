@@ -24,7 +24,7 @@ namespace Utils {
     }
     // generate a random float between lower and upper (inclusive).
     inline float randFloat(float lower, float upper) {
-        return lower+(upper-lower)*(std::rand()/(float)RAND_MAX);
+        return lower+(upper-lower)*((float)std::rand()/(float)RAND_MAX);
     }
 
     // eta = η
@@ -38,5 +38,29 @@ namespace Utils {
             return glm::vec3(0.0f);
         return eta * incident - (eta * cosTheta + glm::sqrt(k)) * normal;
     }
+
+    // https://martin.ankerl.com/2012/01/25/optimized-approximative-pow-in-c-and-cpp/
+    // Approximative pow(). Use with caution
+    inline double fastPow(double a, double b) {
+        union {
+            double d;
+            int x[2];
+        } u = { a };
+        u.x[1] = (int)(b * (u.x[1] - 1072632447) + 1072632447);
+        u.x[0] = 0;
+        return u.d;
+    }
+
+    // https://en.wikipedia.org/wiki/Schlick%27s_approximation
+    // Returns: Reflection Coefficient (R)
+    // surroundingIOR is by default 1.0 (air)
+    inline float schlickApproximation(float cosTheta, float objectIOR, float surroundingIOR = 1.0f) {
+        // ((surroundingIOR - objectIOR) / (surroundingIOR + objectIOR)) squared
+        float R0 = ((surroundingIOR - objectIOR) / (surroundingIOR + objectIOR));
+        R0 *= R0;
+        float x = 1.0f-cosTheta; // x^5
+        return R0 + (1.0f - R0)*(x*x*x*x*x);
+    }
+
 
 } // namespace Utils

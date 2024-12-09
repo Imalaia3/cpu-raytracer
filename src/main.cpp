@@ -1,6 +1,8 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <SDL2/SDL.h>
+#include <ctime>
+#include <cstdlib>
 
 #include "display/screen.h"
 #include "renderer/renderer.h"
@@ -12,15 +14,18 @@
 #include "renderer/material/constant.h"
 #include "renderer/utils/timer.h"
 
-int main(int argc, char const *argv[]) {   
+int main(int argc, char const *argv[]) {
+    // TODO TODO TODO: Use double precision
+
     SDL_version ver; SDL_VERSION(&ver);
     std::cout << "SDL2 Version: " << (uint32_t)ver.major << "." << (uint32_t)ver.minor << "\n";
     std::cout << "GLM Version: " << GLM_VERSION << "\n";
 
+    srand(static_cast<unsigned int>(time(0)));
+
     // 16:9 resolution
     const uint32_t WIDTH = 960;
     const uint32_t HEIGHT = 540;
-
 
     Screen scr(WIDTH, HEIGHT, "Raytracer");
     Renderer renderer(WIDTH, HEIGHT);
@@ -30,7 +35,7 @@ int main(int argc, char const *argv[]) {
         .viewWidth = 1.6f,
         .viewHeight = 0.9f,
         .maxBounces = 24,
-        .samplesPerPixel = 2
+        .samplesPerPixel = 64
     });
 
     auto whiteDiffuse = std::make_shared<GenericDiffuse>();
@@ -40,20 +45,19 @@ int main(int argc, char const *argv[]) {
     smokeMaterial->updateSettings(glm::vec3(0.2f));
     auto redDiffuse = std::make_shared<GenericDiffuse>();
     redDiffuse->updateSettings(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.5f);
-
     auto greenDiffuse = std::make_shared<GenericDiffuse>();
-    greenDiffuse->updateSettings(glm::vec3(0.0f), Utils::colorFromHex(0x3f9b0b), 0.5f);
+    greenDiffuse->updateSettings(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.5f);
+
 
     //  renderer.getWorld().addObject(std::make_unique<VolumeObject>("", std::make_unique<Sphere>(glm::vec3(-2.0f, 0.0f, 5.0f), 0.5f, "Bob0", whiteDiffuse), 0.1f, smokeMaterial));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( -1.0f, -.5f, 3.0f), 0.5f, "Bob1", yellowEmmisive));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 2.0f, 0.0f, 3.0f), 0.5f, "Bob2", whiteDiffuse));
-    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 0.5f, 0.0f, 6.5f), 0.5f, "Bob3", redDiffuse));
-    renderer.getWorld().addObject(std::make_unique<Plane>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), "Floor", whiteDiffuse));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( -1.0f, 0.0f, 3.0f), 0.5f, "Bob1", yellowEmmisive));
+    renderer.getWorld().addObject(std::make_unique<Sphere>(glm::vec3( 1.1f, 0.0f, 3.0f), 0.5f, "Bob3", redDiffuse));
     renderer.getWorld().addObject(std::make_unique<Triangle>(
         glm::vec3(0.0f, .5f, 6.0f),
         glm::vec3(0.0f, -0.5f, 5.0f),
         glm::vec3(1.0f, -0.5f, 5.0f),
     "Triangle", greenDiffuse));
+    renderer.getWorld().addObject(std::make_unique<Plane>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), "Floor", whiteDiffuse));
 
     Utils::Timer perfTimer;
     perfTimer.start();

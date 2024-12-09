@@ -30,11 +30,14 @@ std::optional<Object::CollisionData> Triangle::collides(Ray& ray, float threshol
     if (t < threshold)
         return {};
 
+    glm::vec3 normal = glm::normalize(glm::cross(e1, e2));
+    if (m_isBackFace)
+        normal = -normal;
     auto data = CollisionData {
         .objectName = m_name ,
         .t = t,
         .position = ray.point(t),
-        .normal = glm::normalize(glm::cross(e1, e2)), // note: does this need to be normalized?
+        .normal = normal, // note: does this need to be normalized?
         .material = m_material, 
     };
     setFaceType(data, normalDir);

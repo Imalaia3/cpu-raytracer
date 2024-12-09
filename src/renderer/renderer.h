@@ -11,7 +11,7 @@
 
 class Renderer {
 public:
-    //todo: should this be move into Camera so the camera can take this in the constructor?
+    //todo: should this be moved into Camera so the camera can take this in the constructor?
     struct CameraSettings {
         glm::vec3 position;
         float focalLength;
