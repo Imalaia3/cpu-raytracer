@@ -22,6 +22,39 @@ namespace Utils {
         uint8_t r = (hexColor & 0xFF0000) >> 16;
         return colorFromRGB(r, g, b);
     }
+    // https://entropymine.com/imageworsener/srgbformula/
+    inline double linearToSRGB(double linear) {
+        linear = glm::clamp(linear, 0.0, 1.0);
+        return (linear <= 0.0031308) ? linear * 12.92 : 1.055*glm::pow(linear, 1.0/2.4) - 0.055;
+    }
+    inline glm::dvec3 linearToSRGB(glm::dvec3 linear) {
+        return glm::dvec3 (
+            linearToSRGB(linear.x),
+            linearToSRGB(linear.y),
+            linearToSRGB(linear.z)
+        );
+    }
+    inline double SRGBToLinear(double srgb) {
+        srgb = glm::clamp(srgb, 0.0, 1.0);
+        return (srgb <= 0.04045) ? srgb / 12.92 : glm::pow((srgb+0.055)/1.055, 2.4);
+    }
+    inline glm::dvec3 SRGBToLinear(glm::dvec3 srgb) {
+        return glm::dvec3 (
+            SRGBToLinear(srgb.x),
+            SRGBToLinear(srgb.y),
+            SRGBToLinear(srgb.z)
+        );
+    }
+    // https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+    inline glm::dvec3 toneMappingACES(glm::dvec3 in) {
+        constexpr double a = 2.51;
+        constexpr double b = 0.03;
+        constexpr double c = 2.43;
+        constexpr double d = 0.59;
+        constexpr double e = 0.14;
+        return glm::clamp((in*(a*in+b))/(in*(c*in+d)+e), 0.0, 1.0);
+    }
+
     // generate a random double between lower and upper (inclusive).
     inline double randFloat(double lower, double upper) {
         return lower+(upper-lower)*((double)std::rand()/(double)RAND_MAX);

@@ -35,7 +35,9 @@ std::vector<glm::dvec3> Camera::render(World& world) {
             for (size_t i = 0; i < m_samplesPerPixel; i++) {
                 samplesSum += getPixelValue(world, ray, m_maxBounces);
             }
-            outputData[y*m_imageWidth+x] = samplesSum / static_cast<double>(m_samplesPerPixel); // average of all pixels
+
+            glm::dvec3 avgColor = Utils::toneMappingACES((samplesSum / static_cast<double>(m_samplesPerPixel))*m_exposure);
+            outputData[y*m_imageWidth+x] = Utils::linearToSRGB(avgColor); // average of all pixels
         }
         // don't print on every line
         if (y % 20 == 0)
