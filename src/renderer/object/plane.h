@@ -6,9 +6,9 @@
 class Plane : public Object {
 public:
     // normal: normal vector of the plane, point: a point that falls within the plane
-    Plane(glm::vec3 normal, glm::vec3 point, std::string objectName, std::shared_ptr<Material> material) :
+    Plane(glm::dvec3 normal, glm::dvec3 point, std::string objectName, std::shared_ptr<Material> material) :
         Object(m_point, objectName, material), m_point(point), m_normal(normal) { /* Note: m_point = m_position*/ }
-    std::optional<Object::CollisionData> collides(Ray& ray, float threshold = 0.0f) const override;
+    std::optional<Object::CollisionData> collides(Ray& ray, double threshold = 0.0) const override;
 private:
-    glm::vec3 m_normal, m_point;
+    glm::dvec3 m_normal, m_point;
 };

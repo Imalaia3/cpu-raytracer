@@ -18,28 +18,28 @@ public:
 
     struct CollisionData {
         std::string objectName;
-        float t;
-        glm::vec3 position;
-        glm::vec3 normal;
+        double t;
+        glm::dvec3 position;
+        glm::dvec3 normal;
         std::shared_ptr<Material> material;
         FaceType faceType;
     };
 
 
-    Object(glm::vec3 position, std::string objectName, std::shared_ptr<Material> material) : m_position(position), m_name(objectName), m_material(material) {};
+    Object(glm::dvec3 position, std::string objectName, std::shared_ptr<Material> material) : m_position(position), m_name(objectName), m_material(material) {};
     virtual ~Object() = default;
     // if distance is less than threshold collides() will return no value
-    virtual std::optional<CollisionData> collides(Ray& ray, float threshold = 0.0f) const = 0;
+    virtual std::optional<CollisionData> collides(Ray& ray, double threshold = 0.0) const = 0;
 
-    glm::vec3 getPosition() const { return m_position; }
-    void setPosition(glm::vec3 position) { m_position = position; }
+    glm::dvec3 getPosition() const { return m_position; }
+    void setPosition(glm::dvec3 position) { m_position = position; }
     std::shared_ptr<Material> getMaterial() const {return m_material; }
     const std::string& getObjectName() const { return m_name; }
 protected:
-    void setFaceType(CollisionData& collision, glm::vec3 incomingRayDir) const;
+    void setFaceType(CollisionData& collision, glm::dvec3 incomingRayDir) const;
 
     std::string m_name;
-    glm::vec3 m_position;
-    glm::vec3 m_color;
+    glm::dvec3 m_position;
+    glm::dvec3 m_color;
     std::shared_ptr<Material> m_material;
 };

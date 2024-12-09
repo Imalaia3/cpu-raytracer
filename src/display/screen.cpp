@@ -28,7 +28,7 @@ void Screen::putPixel(uint32_t x, uint32_t y, uint8_t red, uint8_t green, uint8_
     SDL_SetRenderDrawColor(m_renderer, red, green, blue, 255);
     SDL_RenderDrawPoint(m_renderer, x, y);
 }
-void Screen::putPixel(uint32_t x, uint32_t y, glm::vec3 color) {
+void Screen::putPixel(uint32_t x, uint32_t y, glm::dvec3 color) {
     SDL_SetRenderDrawColor(m_renderer,
         floor(color.r >= 1.0 ? 255 : color.r * 256.0),
         floor(color.g >= 1.0 ? 255 : color.g * 256.0),
@@ -45,7 +45,7 @@ void Screen::updateDisplay() {
     SDL_RenderPresent(m_renderer);
 }
 
-void Screen::fromArray(std::vector<glm::vec3>& pixels) {
+void Screen::fromArray(std::vector<glm::dvec3>& pixels) {
     void* pixelPtr = nullptr;
     int pitch = 0;
     SDL_LockTexture(m_drawTexture, NULL, &pixelPtr, &pitch);

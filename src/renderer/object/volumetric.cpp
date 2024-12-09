@@ -1,14 +1,14 @@
 #include "volumetric.h"
 #include "../utils/utils.h"
 
-std::optional<VolumeObject::CollisionData> VolumeObject::collides(Ray& ray, float threshold) const {
+std::optional<VolumeObject::CollisionData> VolumeObject::collides(Ray& ray, double threshold) const {
     // https://en.wikipedia.org/wiki/Volumetric_path_tracing
-    auto lowerBound = m_volume->collides(ray, 0.0f);
+    auto lowerBound = m_volume->collides(ray, 0.0);
     if (!lowerBound.has_value())
         return {};
 
     // upperBound is the remaining distance from the initial collision to the other side of the volume (In a sphere that would be 2*radius)
-    auto upperBound = m_volume->collides(ray, lowerBound.value().t+0.0001f);
+    auto upperBound = m_volume->collides(ray, lowerBound.value().t+0.0001);
     if (!upperBound.has_value())
         return {};
     
@@ -19,24 +19,24 @@ std::optional<VolumeObject::CollisionData> VolumeObject::collides(Ray& ray, floa
         return {};
 
     // the distance between the two collisions, adjusted for the ray direction
-    float length = ray.direction.length(); // do the sqrt only once
+    double length = ray.direction.length(); // do the sqrt only once
     // distance between entry and exit of the volume
-    float distance = (upperBound.value().t - lowerBound.value().t) * length;
+    double distance = (upperBound.value().t - lowerBound.value().t) * length;
     // from RT in one weekend, it basically specifies the maximum possible distance the ray can go through
     // the volume before it hits a "particle". It's random but it is based off of the density. The higher
     // the density the lower the maxDistance. 
-    float maxDistanceBeforeHit = (-1.0f / m_volumeDensity) * glm::log(Utils::randFloat(0.0f, 1.0f));
+    double maxDistanceBeforeHit = (-1.0 / m_volumeDensity) * glm::log(Utils::randFloat(0.0, 1.0));
 
     // ray didn't "hit" anything.
     if (maxDistanceBeforeHit > distance)
         return {};
     
-    float t = lowerBound.value().t + maxDistanceBeforeHit / length;
+    double t = lowerBound.value().t + maxDistanceBeforeHit / length;
     CollisionData data = CollisionData {
         .objectName = m_name,
         .t = t,
         .position = ray.point(t),
-        .normal = glm::vec3(),
+        .normal = glm::dvec3(),
         .material = m_material
     };
     setFaceType(data, ray.direction);

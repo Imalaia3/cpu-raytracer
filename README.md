@@ -15,7 +15,7 @@ A simple CPU based raytracer (or a path tracer) that aims to be feature rich and
 - [ ] Bloom
 - [ ] Multithreaded rendering
 - [ ] Keyframing / Animations (?)
-- [ ] Use double precision instead of single precision floats
+- [X] Use double precision instead of single precision floats
 
 ## Compilation
 To compile this project CMake, SDL2 and GLM must be installed. It is assumed that a Linux environment is being used. Support for Windows may be implemented in the future

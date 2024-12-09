@@ -17,11 +17,11 @@ public:
     // 0-255 range
     void putPixel(uint32_t x, uint32_t y, uint8_t red, uint8_t green, uint8_t blue);
     // 0-1 range
-    void putPixel(uint32_t x, uint32_t y, glm::vec3 color);
+    void putPixel(uint32_t x, uint32_t y, glm::dvec3 color);
     void clearDisplay();
     void updateDisplay();
     // 0-1 range
-    void fromArray(std::vector<glm::vec3>& pixels);
+    void fromArray(std::vector<glm::dvec3>& pixels);
     
     void waitForKeypress();
 

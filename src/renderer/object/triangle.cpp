@@ -2,35 +2,35 @@
 #include <iostream>
 
 
-std::optional<Object::CollisionData> Triangle::collides(Ray& ray, float threshold) const {
-    const float epsilon = 0.0001f; // fixme: implement a global epsilon value, must be positive
+std::optional<Object::CollisionData> Triangle::collides(Ray& ray, double threshold) const {
+    const double epsilon = 0.0001; // fixme: implement a global epsilon value, must be positive
 
-    glm::vec3 normalDir = glm::normalize(ray.direction);
+    glm::dvec3 normalDir = glm::normalize(ray.direction);
 
-    glm::vec3 e1 = m_points.v2 - m_points.v1;
-    glm::vec3 e2 = m_points.v3 - m_points.v1;
-    glm::vec3 DCrossE2 = glm::cross(normalDir, e2);
-    float det = glm::dot(e1, DCrossE2);
+    glm::dvec3 e1 = m_points.v2 - m_points.v1;
+    glm::dvec3 e2 = m_points.v3 - m_points.v1;
+    glm::dvec3 DCrossE2 = glm::cross(normalDir, e2);
+    double det = glm::dot(e1, DCrossE2);
     if (glm::abs(det) < epsilon)
         return {};
     
-    float invDet = 1.0f / det;
-    glm::vec3 s = ray.origin - m_points.v1;
-    float u = invDet * glm::dot(s, DCrossE2);
+    double invDet = 1.0 / det;
+    glm::dvec3 s = ray.origin - m_points.v1;
+    double u = invDet * glm::dot(s, DCrossE2);
     //                                         FIXME: only int abs() on here
-    if ((u < 0.0f && glm::abs(u) > epsilon) || (u > 1.f && abs(u-1.0f) > epsilon))
+    if ((u < 0.0 && glm::abs(u) > epsilon) || (u > 1. && abs(u-1.0) > epsilon))
         return {};
     
-    glm::vec3 SCrossE1 = glm::cross(s, e1);
-    float v = invDet * glm::dot(normalDir, SCrossE1);
-    if ((v < 0.0f && glm::abs(v) > epsilon) || (u + v > 1 && abs(u + v - 1.0f) > epsilon))
+    glm::dvec3 SCrossE1 = glm::cross(s, e1);
+    double v = invDet * glm::dot(normalDir, SCrossE1);
+    if ((v < 0.0 && glm::abs(v) > epsilon) || (u + v > 1 && abs(u + v - 1.0) > epsilon))
         return {};
     
-    float t = invDet * glm::dot(e2, SCrossE1);
+    double t = invDet * glm::dot(e2, SCrossE1);
     if (t < threshold)
         return {};
 
-    glm::vec3 normal = glm::normalize(glm::cross(e1, e2));
+    glm::dvec3 normal = glm::normalize(glm::cross(e1, e2));
     if (m_isBackFace)
         normal = -normal;
     auto data = CollisionData {

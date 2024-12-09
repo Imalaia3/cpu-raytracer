@@ -8,13 +8,13 @@ public:
     ConstantMaterial() : Material() {}
     
     Ray reflect(Object::CollisionData& collision, Ray& incomingRay) override {
-        return Ray(collision.position, glm::sphericalRand(1.0f));
+        return Ray(collision.position, glm::sphericalRand(1.0));
     }
-    glm::vec3 color(Object::CollisionData& collision, Ray& outgoingRay, glm::vec3 otherColor = glm::vec3(1.0f)) override {
+    glm::dvec3 color(Object::CollisionData& collision, Ray& outgoingRay, glm::dvec3 otherColor = glm::dvec3(1.0)) override {
         return diffuseColor;
     }
-    void updateSettings(glm::vec3 diffuse) {
+    void updateSettings(glm::dvec3 diffuse) {
         diffuseColor = diffuse;
     }
-    glm::vec3 diffuseColor = glm::vec3(1.0f); // albedo, attenuation, etc
+    glm::dvec3 diffuseColor = glm::dvec3(1.0); // albedo, attenuation, etc
 };

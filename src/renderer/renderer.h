@@ -13,16 +13,16 @@ class Renderer {
 public:
     //todo: should this be moved into Camera so the camera can take this in the constructor?
     struct CameraSettings {
-        glm::vec3 position;
-        float focalLength;
-        float viewWidth;
-        float viewHeight;
+        glm::dvec3 position;
+        double focalLength;
+        double viewWidth;
+        double viewHeight;
         uint32_t maxBounces;
         uint32_t samplesPerPixel;
     };
 
     Renderer(uint32_t width, uint32_t height);
-    std::vector<glm::vec3> render();
+    std::vector<glm::dvec3> render();
     
     void setCameraSettings(CameraSettings settings);
     World& getWorld() { return m_world; }
