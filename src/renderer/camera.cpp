@@ -3,14 +3,26 @@
 #include <limits>
 #include "object/sphere.h"
 
-Camera::Camera(glm::dvec3 position, double focalLength, double viewWidth, double viewHeight, uint32_t imgWidth, uint32_t imgHeight, uint32_t samplesPerPixel) :
-    m_position(position), m_focalLength(focalLength), m_width(viewWidth), m_height(viewHeight), m_imageWidth(imgWidth), m_imageHeight(imgHeight), m_samplesPerPixel(samplesPerPixel) {
+#define LOG_VEC3(v) std::cout << "Vec3(" << v.x << ", " << v.y << ", " << v.z << ")\n"
+#define LOG_VEC2(v) std::cout << "Vec2(" << v.x << ", " << v.y << ")\n"
+#define PI 3.141592653589793
+
+Camera::Camera(glm::dvec3 position, double fovDeg, uint32_t imgWidth, uint32_t imgHeight, uint32_t samplesPerPixel) :
+    m_position(position), m_fovDeg(fovDeg), m_imageWidth(imgWidth), m_imageHeight(imgHeight), m_samplesPerPixel(samplesPerPixel) {
     
-    m_pixelDx = viewWidth / (double)imgWidth;
-    m_pixelDy = -(viewHeight / (double)imgHeight);
-    // +z is forward
-    m_topLeft = m_position + glm::dvec3(0.0, 0.0, m_focalLength) - glm::dvec3(viewWidth/2.0, 0.0, 0.0) - glm::dvec3(0.0, -viewHeight/2.0, 0.0);
+    // +y is up
+    m_worldUp = glm::dvec3(0.0, 1.0, 0.0);
+    // looking at +z
+    m_camLookAt = glm::dvec3(0.0, 0.0, 1.0);
+    calculateVectors();
+
     m_initialized = true;
+}
+
+void Camera::calculateVectors() {
+    m_camForward = glm::normalize(m_camLookAt - m_position);
+    m_camRight = glm::normalize(glm::cross(m_worldUp, m_camForward));
+    m_camUp = glm::normalize(glm::cross(m_camForward, m_camRight));
 }
 
 std::vector<glm::dvec3> Camera::render(World& world) {
@@ -19,17 +31,22 @@ std::vector<glm::dvec3> Camera::render(World& world) {
 
     std::vector<glm::dvec3> outputData(m_imageWidth*m_imageHeight, glm::dvec3(0.0));
 
-    // all rays should go through the center of each pixel and not the top left
-    glm::dvec3 drawOrigin = m_topLeft + (glm::dvec3(m_pixelDx, m_pixelDy, 0.0) * 0.5);
-    std::cout << "Camera: Screen Pixel Origin (XYZ): " << drawOrigin.x << " " << drawOrigin.y << " " << drawOrigin.z << "\n";
     std::cout << "Camera: Maximum Bounces Per Pixel: " << m_maxBounces << "\n";
+
+    glm::dvec2 pixelCoord(0.0);
+    double planeDist = 1.0 / glm::tan(glm::radians(m_fovDeg) * 0.5);
+    double aspectRatio = (double)m_imageWidth/m_imageHeight;
+    double dX = 1.0/(double)m_imageWidth;
+    double dY = 1.0/(double)m_imageHeight;
     for (uint32_t y = 0; y < m_imageHeight; y++) {
+        // all rays should go through the center of each pixel and not the top left
+        pixelCoord.y = (((double)y + 0.5) * dY) * 2.0 - 1.0;
+        pixelCoord.y /= -aspectRatio;
         for (uint32_t x = 0; x < m_imageWidth; x++) {
-            // pixel position - camera center, resulting in a coordinate system where:
-            // left = -x, right = +x, up = +y down = -y
-            // fixme: maybe it's better if +y to be up
-            glm::dvec3 direction = (drawOrigin + glm::dvec3(x*m_pixelDx, y*m_pixelDy, 0.0)) - m_position;
-            Ray ray(m_position, glm::normalize(direction));
+            pixelCoord.x = (((double)x + 0.5) * dX) * 2.0 - 1.0;
+            glm::dvec3 dir = glm::vec3(pixelCoord, planeDist);
+            dir = glm::mat3(m_camRight, m_camUp, m_camForward) * dir;
+            Ray ray(m_position, glm::normalize(dir));
 
             glm::dvec3 samplesSum = glm::dvec3(0.0);
             for (size_t i = 0; i < m_samplesPerPixel; i++) {

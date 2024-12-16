@@ -14,9 +14,7 @@ public:
     //todo: should this be moved into Camera so the camera can take this in the constructor?
     struct CameraSettings {
         glm::dvec3 position;
-        double focalLength;
-        double viewWidth;
-        double viewHeight;
+        double fovDegrees;
         uint32_t maxBounces;
         uint32_t samplesPerPixel;
     };

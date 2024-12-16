@@ -28,10 +28,8 @@ int main(int argc, char const *argv[]) {
     Screen scr(WIDTH, HEIGHT, "Raytracer");
     Renderer renderer(WIDTH, HEIGHT);
     renderer.setCameraSettings(Renderer::CameraSettings{
-        .position = glm::dvec3(0.0),
-        .focalLength = 1.,
-        .viewWidth = 1.6,
-        .viewHeight = 0.9,
+        .position = glm::dvec3(0.0, 0.0, 0.0),
+        .fovDegrees = 90.0,
         .maxBounces = 24,
         .samplesPerPixel = 10
     });
