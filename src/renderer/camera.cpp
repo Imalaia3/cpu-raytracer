@@ -25,12 +25,19 @@ void Camera::calculateVectors() {
     m_camUp = glm::normalize(glm::cross(m_camForward, m_camRight));
 }
 
+void Camera::colorCorrect(std::vector<glm::dvec3>& input) {
+    for (uint32_t y = 0; y < m_imageHeight; y++) {
+        for (uint32_t x = 0; x < m_imageWidth; x++) {
+            input[x + y * m_imageWidth] = Utils::linearToSRGB(Utils::toneMappingACES(input[x + y * m_imageWidth] * m_exposure));
+        }
+    }
+}
+
 std::vector<glm::dvec3> Camera::render(World& world) {
     if (!m_initialized)
         throw std::runtime_error("Camera has not been initialized!");
 
     std::vector<glm::dvec3> outputData(m_imageWidth*m_imageHeight, glm::dvec3(0.0));
-
     std::cout << "Camera: Maximum Bounces Per Pixel: " << m_maxBounces << "\n";
 
     glm::dvec2 pixelCoord(0.0);
@@ -38,29 +45,29 @@ std::vector<glm::dvec3> Camera::render(World& world) {
     double aspectRatio = (double)m_imageWidth/m_imageHeight;
     double dX = 1.0/(double)m_imageWidth;
     double dY = 1.0/(double)m_imageHeight;
-    for (uint32_t y = 0; y < m_imageHeight; y++) {
-        // all rays should go through the center of each pixel and not the top left
-        pixelCoord.y = (((double)y + 0.5) * dY) * 2.0 - 1.0;
-        pixelCoord.y /= -aspectRatio;
-        for (uint32_t x = 0; x < m_imageWidth; x++) {
-            pixelCoord.x = (((double)x + 0.5) * dX) * 2.0 - 1.0;
-            glm::dvec3 dir = glm::vec3(pixelCoord, planeDist);
-            dir = glm::mat3(m_camRight, m_camUp, m_camForward) * dir;
-            Ray ray(m_position, glm::normalize(dir));
+    uint32_t sampleIndex = 0;
+    while (sampleIndex < m_samplesPerPixel) {
+        for (uint32_t y = 0; y < m_imageHeight; y++) {
+            // all rays should go through the center of each pixel and not the top left
+            pixelCoord.y = (((double)y + 0.5) * dY) * 2.0 - 1.0;
+            pixelCoord.y /= -aspectRatio;
+            for (uint32_t x = 0; x < m_imageWidth; x++) {
+                pixelCoord.x = (((double)x + 0.5) * dX) * 2.0 - 1.0;
+                glm::dvec3 dir = glm::vec3(pixelCoord, planeDist);
+                dir = glm::mat3(m_camRight, m_camUp, m_camForward) * dir;
+                Ray ray(m_position, glm::normalize(dir));
+                glm::dvec3 col = getPixelValue(world, ray, m_maxBounces);
 
-            glm::dvec3 samplesSum = glm::dvec3(0.0);
-            for (size_t i = 0; i < m_samplesPerPixel; i++) {
-                samplesSum += getPixelValue(world, ray, m_maxBounces);
+                // averaging, based off of the code found here: https://www.shadertoy.com/view/WsBBR3
+                outputData[y*m_imageWidth+x] = glm::mix(outputData[y*m_imageWidth+x], col, computePixelBlendFactor(sampleIndex));
             }
-
-            glm::dvec3 avgColor = Utils::toneMappingACES((samplesSum / static_cast<double>(m_samplesPerPixel))*m_exposure);
-            outputData[y*m_imageWidth+x] = Utils::linearToSRGB(avgColor); // average of all pixels
         }
-        // don't print on every line
-        if (y % 20 == 0)
-            std::cout << "Line " << y + 1 << " done (" << m_imageHeight - y - 1 << " lines left).\n";
+        std::cout << "Sample " << sampleIndex+1 << "/" << m_samplesPerPixel << " done.\n";
+        m_callback(outputData); // Display the current frame
+        sampleIndex++;
     }
-
+    std::cout << "Applying Post Processing filters...\n";
+    colorCorrect(outputData);
     return outputData;
 }
 

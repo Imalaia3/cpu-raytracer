@@ -24,6 +24,9 @@ public:
     
     void setCameraSettings(CameraSettings settings);
     World& getWorld() { return m_world; }
+    void setRenderCallback(std::function<void(const std::vector<glm::dvec3>&)> cb) {
+        m_camera.setCallback(cb);
+    }
 private:
     uint32_t m_displayWidth, m_displayHeight;
     Camera m_camera;

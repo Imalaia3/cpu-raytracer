@@ -45,7 +45,7 @@ void Screen::updateDisplay() {
     SDL_RenderPresent(m_renderer);
 }
 
-void Screen::fromArray(std::vector<glm::dvec3>& pixels) {
+void Screen::fromArray(const std::vector<glm::dvec3>& pixels) {
     void* pixelPtr = nullptr;
     int pitch = 0;
     SDL_LockTexture(m_drawTexture, NULL, &pixelPtr, &pitch);

@@ -34,6 +34,11 @@ int main(int argc, char const *argv[]) {
         .samplesPerPixel = 10
     });
 
+    renderer.setRenderCallback([&](const std::vector<glm::dvec3>& pixels){
+        scr.fromArray(pixels);
+        scr.updateDisplay();
+    });
+
     auto whiteDiffuse = std::make_shared<GenericDiffuse>();
     auto yellowEmmisive = std::make_shared<GenericDiffuse>();
     yellowEmmisive->updateSettings(Utils::colorFromHex(0xf79900)*4.0, Utils::colorFromHex(0xf79900), 0.5);

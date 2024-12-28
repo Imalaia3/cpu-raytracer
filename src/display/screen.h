@@ -21,8 +21,7 @@ public:
     void clearDisplay();
     void updateDisplay();
     // 0-1 range
-    void fromArray(std::vector<glm::dvec3>& pixels);
-    
+    void fromArray(const std::vector<glm::dvec3>& pixels);
     void waitForKeypress();
 
     uint32_t getWidth() { return m_width; }
