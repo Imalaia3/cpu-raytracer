@@ -3,13 +3,13 @@ A simple CPU based raytracer (or a path tracer) that aims to be feature rich and
 
 ## Planned Features
 
-- [ ] Diffuse objects
+- [X] Diffuse objects
 - [ ] Reflective/Metallic objects
-- [ ] Emissive objects
+- [X] Emissive objects
 - [ ] Normal maps / Roughness maps / Color (albedo) maps
 - [ ] Refraction
 - [ ] Bounding Volume Hierarchies
-- [ ] Multiple object types ( Spheres, Quads, Planes, etc )
+- [X] Multiple object types ( Spheres, Quads, Planes, etc )
 - [ ] Volumetric objects ( Smoke, Fog, etc )
 - [ ] HDRIs
 - [ ] Bloom
